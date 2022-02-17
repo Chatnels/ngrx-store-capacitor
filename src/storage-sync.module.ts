@@ -3,20 +3,19 @@ import { ActionReducer } from '@ngrx/store';
 import { defer, Observable } from 'rxjs';
 import { Effect } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
-import { Plugins } from '@capacitor/core';
+import { GetResult, Storage } from '@capacitor/storage';
 import { of } from 'rxjs/internal/observable/of';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { catchError, map } from 'rxjs/operators';
 
 import { getNested, setNested } from './object.helper';
 
-const { Storage } = Plugins;
 const STORAGE_KEY = 'NSIS_APP_STATE';
 
 function fetchState(): Promise<void | {}> {
   return Storage.get({ key: STORAGE_KEY })
-    .then(s => JSON.parse(s.value) || {})
-    .catch(err => {});
+    .then((s: GetResult) => JSON.parse(s.value) || {})
+    .catch((err: Error) => {});
 }
 
 function saveState(state: any, keys: string[]): Promise<void> {

@@ -31,7 +31,8 @@
     "@angular/compiler": "^6.0.0",
     "@angular/compiler-cli": "^6.0.0",
     "@angular/core": "^6.0.0",
-    "@capacitor/core": "1.0.0-beta.17",
+    "@capacitor/core": "^3.4.1",
+    "@capacitor/storage": "^1.2.4",
     "@ngrx/effects": "6.1.2",
     "@ngrx/store": "6.1.2",
     "@types/es6-promise": "0.0.33",
@@ -57,7 +58,7 @@
   "peerDependencies": {
     "@angular/common": ">=6.0.0",
     "@angular/core": ">=6.0.0",
-    "@capacitor/core": "^1.0.0-beta.17",
+    "@capacitor/storage": "^1.2.4",
     "@ngrx/effects": ">=6.0.0",
     "@ngrx/store": ">=6.0.0",
     "rxjs": ">=6.0.0"
