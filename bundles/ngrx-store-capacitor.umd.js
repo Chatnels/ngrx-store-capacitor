@@ -3025,7 +3025,7 @@ function fetchState() {
     return __WEBPACK_IMPORTED_MODULE_3__capacitor_storage__["a" /* Storage */].get({ key: STORAGE_KEY })
         .then(function (s) {
         try {
-            if (s) {
+            if (s && s.value) {
                 return JSON.parse(s.value);
             }
             return {};
@@ -7459,8 +7459,10 @@ function getNested(obj, path) {
     if (obj !== null && path) {
         // Recurse into the object.
         var parts = path.split('.').reverse();
-        while (obj != null && parts.length) {
-            obj = obj[parts.pop()];
+        if (parts) {
+            while (obj != null && parts.length) {
+                obj = obj[parts.pop()];
+            }
         }
     }
     return obj;

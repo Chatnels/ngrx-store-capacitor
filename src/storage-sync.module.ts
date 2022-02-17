@@ -16,7 +16,7 @@ function fetchState(): Promise<void | {}> {
   return Storage.get({ key: STORAGE_KEY })
     .then((s: GetResult) => {
       try {
-        if(s) {
+        if(s && s.value) {
           return JSON.parse(s.value);
         }
         return {};

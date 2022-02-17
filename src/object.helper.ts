@@ -4,8 +4,10 @@ export function getNested(obj: any, path: string): any {
   if (obj !== null && path) {
     // Recurse into the object.
     const parts = path.split('.').reverse();
-    while (obj != null && parts.length) {
-      obj = obj[parts.pop()];
+    if (parts) {
+      while (obj != null && parts.length) {
+        obj = obj[parts.pop()];
+      }
     }
   }
   return obj;
