@@ -41,6 +41,7 @@
     "clean-webpack-plugin": "^0.1.16",
     "codelyzer": "~4.3.0",
     "loader-utils": "~1.1.0",
+    "lodash-es": "^4.17.21",
     "reflect-metadata": "~0.1.12",
     "rimraf": "2.6.3",
     "rxjs": "6.3.3",

@@ -3023,7 +3023,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var STORAGE_KEY = 'NSIS_APP_STATE';
 function fetchState() {
     return __WEBPACK_IMPORTED_MODULE_3__capacitor_storage__["a" /* Storage */].get({ key: STORAGE_KEY })
-        .then(function (s) { return JSON.parse(s.value) || {}; })
+        .then(function (s) {
+        try {
+            if (s) {
+                return JSON.parse(s.value);
+            }
+            return {};
+        }
+        catch (e) {
+            return {};
+        }
+    })
         .catch(function (err) { });
 }
 function saveState(state, keys) {
@@ -3070,12 +3080,12 @@ var StorageSyncEffects = /** @class */ (function () {
 var defaultOptions = {
     keys: [],
     ignoreActions: [],
-    hydratedStateKey: null,
+    hydratedStateKey: undefined,
     onSyncError: function () { },
 };
 function storageSync(options) {
     // @ts-ignore
-    var _a = __assign({}, defaultOptions, (options || {})), keys = _a.keys, ignoreActions = _a.ignoreActions, hydratedStateKey = _a.hydratedStateKey, onSyncError = _a.onSyncError;
+    var _a = __assign({}, defaultOptions, (options || {})), keys = _a.keys, _b = _a.ignoreActions, ignoreActions = _b === void 0 ? [] : _b, hydratedStateKey = _a.hydratedStateKey, onSyncError = _a.onSyncError;
     ignoreActions.push(StorageSyncActions.HYDRATED);
     ignoreActions.push('@ngrx/store/init');
     ignoreActions.push('@ngrx/effects/init');
@@ -3092,7 +3102,11 @@ function storageSync(options) {
             }
             var nextState = __assign({}, reducer(state, action), hydratedState);
             if (ignoreActions.indexOf(type) === -1) {
-                saveState(nextState, keys).catch(function (err) { return onSyncError(err); });
+                saveState(nextState, keys).catch(function (err) {
+                    if (onSyncError) {
+                        onSyncError(err);
+                    }
+                });
             }
             return nextState;
         };

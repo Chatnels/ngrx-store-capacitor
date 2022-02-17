@@ -14,11 +14,20 @@ const STORAGE_KEY = 'NSIS_APP_STATE';
 
 function fetchState(): Promise<void | {}> {
   return Storage.get({ key: STORAGE_KEY })
-    .then((s: GetResult) => JSON.parse(s.value) || {})
+    .then((s: GetResult) => {
+      try {
+        if(s) {
+          return JSON.parse(s.value);
+        }
+        return {};
+      } catch (e) {
+        return {};
+      }
+    })
     .catch((err: Error) => {});
 }
 
-function saveState(state: any, keys: string[]): Promise<void> {
+function saveState(state: any, keys?: string[]): Promise<void> {
   // Pull out the portion of the state to save.
   if (keys) {
     state = keys.reduce((acc, k) => {
@@ -67,13 +76,13 @@ export interface StorageSyncOptions {
 const defaultOptions: StorageSyncOptions = {
   keys: [],
   ignoreActions: [],
-  hydratedStateKey: null,
+  hydratedStateKey: undefined,
   onSyncError: () => {},
 };
 
 export function storageSync(options?: StorageSyncOptions) {
   // @ts-ignore
-  const { keys, ignoreActions, hydratedStateKey, onSyncError } = { ...defaultOptions, ...(options || {}) };
+  const { keys, ignoreActions = [], hydratedStateKey, onSyncError } = { ...defaultOptions, ...(options || {}) };
 
   ignoreActions.push(StorageSyncActions.HYDRATED);
   ignoreActions.push('@ngrx/store/init');
@@ -96,7 +105,11 @@ export function storageSync(options?: StorageSyncOptions) {
       const nextState = { ...reducer(state, action), ...hydratedState };
 
       if (ignoreActions.indexOf(type) === -1) {
-        saveState(nextState, keys).catch(err => onSyncError(err));
+        saveState(nextState, keys).catch(err => {
+          if (onSyncError) {
+            onSyncError(err);
+          }
+        });
       }
 
       return nextState;
